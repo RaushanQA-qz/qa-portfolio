@@ -17,3 +17,9 @@ Target application:
 - SauceDemo (demo e-commerce testing platform)
 
 ---
+## Repository Structure
+
+- Test-Cases — detailed manual test cases
+- Bug-Reports — documented defects and UI issues
+- Checklists — smoke, regression, and exploratory testing checklists
+- API-Testing — Postman collections and API validation examples
