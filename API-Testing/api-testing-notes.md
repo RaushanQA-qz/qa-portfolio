@@ -2,7 +2,9 @@
 
 ## Overview
 
-This section contains examples of API testing practices performed using Postman for demo web application testing.
+This section contains examples of API testing performed using Postman for a demo REST API workflow.
+
+The collection includes authorization requests, data retrieval, and POST request validation for different API scenarios.
 
 ---
 
@@ -17,61 +19,64 @@ This section contains examples of API testing practices performed using Postman 
 
 - GET
 - POST
-- PUT
-- DELETE
 
 ---
 
-## API Validations Performed
+## API Testing Activities
 
-- Status code validation
-- Response body validation
-- JSON structure verification
 - Authorization testing
-- Response time validation
+- Request/response validation
+- JSON response verification
+- Status code validation
+- API workflow testing
+- Variable handling in Postman
 - Error handling validation
-
----
-
-## Example Status Codes Checked
-
-- 200 OK
-- 201 Created
-- 400 Bad Request
-- 401 Unauthorized
-- 404 Not Found
-- 500 Internal Server Error
 
 ---
 
 ## Example Test Scenarios
 
-### Login API
-- Verify successful login with valid credentials
-- Verify error message for invalid credentials
-- Verify unauthorized access handling
+### Authorization API
+- Verify successful authorization
+- Verify token generation
+- Validate unauthorized access handling
 
 ---
 
-### User Data API
-- Verify correct user data is returned
-- Validate JSON response structure
-- Verify response time is acceptable
+### GET Request Testing
+- Verify successful data retrieval
+- Validate response structure
+- Verify correct response status
 
 ---
 
-## API Testing Goals
-
-- Verify backend functionality
-- Validate API responses
-- Ensure data consistency
-- Detect server-side issues
+### POST Request Testing
+- Verify successful data creation
+- Validate request body handling
+- Verify API response consistency
+- Validate error messages for invalid input
 
 ---
 
-## Tools & Technologies
+## Example Validations
+
+- 200 OK
+- 201 Created
+- 400 Bad Request
+- 401 Unauthorized
+
+---
+
+## Technologies Used
 
 - REST API
 - JSON
-- Postman Collections
 - HTTP Requests
+- Postman Collections
+- Environment Variables
+
+---
+
+## Notes
+
+Sensitive and confidential data were removed or replaced with demo values before publishing this collection.
