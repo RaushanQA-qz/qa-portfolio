@@ -1,0 +1,607 @@
+{
+	"info": {
+		"_postman_id": "12bac563-b50f-4c09-a532-c2dc1feb5714",
+		"name": "stage EKDP API Test",
+		"description": "Fixed collection: Create Import captures import_id into environment variable {{import_id}} and subsequent claim requests use it.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47382250"
+	},
+	"item": [
+		{
+			"name": "POST /new — Authorization",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "e4440b6a-8abe-4f80-9b25-7ec4cc329669-176277fded0ff42e1b35ab32d27d5ea1",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "api-key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "e4440b6a-8abe-4f80-9b25-7ec4cc329669-176277fded0ff42e1b35ab32d27d5ea1"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Тест API Key (Authorization)\"\n}"
+				},
+				"url": {
+					"raw": "https://stage.ekdp.kz/api/import/new",
+					"protocol": "https",
+					"host": [
+						"stage",
+						"ekdp",
+						"kz"
+					],
+					"path": [
+						"api",
+						"import",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1. Get KATO Directory",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/import/kato",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"kato"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Create Import",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+							"var json = pm.response.json();",
+							"pm.test('Response has result', function () { pm.expect(json).to.have.property('result'); });",
+							"if (json.result === 'SUCCESS') {",
+							"    pm.environment.set('import_id', json.data.toString());",
+							"    console.log('Saved import_id = ' + json.data);",
+							"} else {",
+							"    console.log('Create import returned error:', json);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Импорт Тестовый QA\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/new",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - VOZVRAT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"vozvrat\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"given_amount\": 10000,\n        \"agreement_date\": \"31/01/2023\",\n        \"return_date\": \"13/02/2023\",\n        \"amount_of_penalty\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - DOGOVOR",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"dogovor\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"contract_title\": \"договор аренды\",\n        \"contract_number\": \"Д-001\",\n        \"contract_date\": \"31/01/2023\",\n        \"contract_amount\": 200000,\n        \"contract_penalty\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - ZP",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"zp\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"work_contract_number\": \"Д-1234\",\n        \"contract_date\": \"31/01/2023\",\n        \"position\": \"менеджер\",\n        \"work_start_date\": \"01/02/2023\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - OSI",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"osi\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"same_object_address\": \"Да\",\n        \"object_locality\": \"710000000\",\n        \"object_street\": \"Республики\",\n        \"object_building\": \"1а\",\n        \"object_room\": \"2\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - ZADATOK",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"zadatok\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"amount_given\": 50000,\n        \"deposit_contract_number\": \"Д-987\",\n        \"deposit_contract_date\": \"31/01/2023\",\n        \"deposit_return_date\": \"01/02/2023\",\n        \"deposit_additional_costs\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - MFO",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"mfo\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"mfo_contract_number\": \"МФО-22\",\n        \"mfo_contract_date\": \"31/01/2023\",\n        \"credit_line_number\": \"123456\",\n        \"credit_line_date\": \"01/02/2023\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - MFOGARANT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"mfogarant\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"borrower_name\": \"Петров Петр\",\n        \"warranty_contract_number\": \"ГАР-11\",\n        \"warranty_contract_date\": \"31/01/2023\",\n        \"mfo_contract_number\": \"МФО-33\",\n        \"mfo_contract_date\": \"01/02/2023\",\n        \"credit_line_number\": \"789012\",\n        \"credit_line_date\": \"02/02/2023\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - MFORAZBIVKA",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"mforazbivka\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"mfo_contract_number\": \"МФО-99\",\n        \"mfo_contract_date\": \"31/01/2023\",\n        \"credit_line_number\": \"456123\",\n        \"credit_line_date\": \"02/02/2023\",\n        \"compensation_amount\": 0,\n        \"mfo_penalty\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - VODOKANAL",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"vodokanal\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"vk_contract_number\": \"ВК-123\",\n        \"consumer_code\": \"C12345\",\n        \"same_object_address\": \"Нет\",\n        \"object_locality\": \"710000000\",\n        \"object_street\": \"Ауезова\",\n        \"object_building\": \"1\",\n        \"object_room\": \"2\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Add Claim - CHATPOST",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"import_id\": \"{{import_id}}\",\n    \"type\": \"chatpost\",\n    \"claim\": {\n        \"iin_bin\": \"123456789012\",\n        \"last_name\": \"Иванов\",\n        \"first_name\": \"Иван\",\n        \"patronymic\": \"\",\n        \"company_name\": \"\",\n        \"email\": \"test@example.com\",\n        \"phone\": \"77771234567\",\n        \"locality\": \"710000000\",\n        \"street\": \"Пр. Республики\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"update_info\": \"Да\",\n        \"delivery\": \"Электронно\",\n        \"occurrence_date\": \"31/01/2023\",\n        \"amount_owed\": 100000,\n        \"pretrial_agreement\": \"Да\",\n        \"post_date\": \"20/06/2025\",\n        \"chat_title\": \"TgChat\",\n        \"media_title\": \"Telegram\",\n        \"consequences\": \"клевета\",\n        \"confirmations\": \"реакция аудитории\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Sign Claim",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "certificate",
+							"type": "file",
+							"src": "/Users/raushankireeva/Desktop/ЭЦП Rubyr1/GOST512_7dc4d3a82dfdd98da733ddc103f4d28e1eaf3081 — копия.p12"
+						},
+						{
+							"key": "password",
+							"value": "Rubyr1",
+							"type": "text"
+						},
+						{
+							"key": "slug",
+							"value": "Af9",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/sign",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"sign"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Check Claim Status",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"slug\": \"Af9\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Import Debt Notice",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"notice\": {\n        \"locality\": \"101010000\",\n        \"street\": \"Ауезова\",\n        \"building\": \"1\",\n        \"room\": \"2\",\n        \"amount_owed\": 90000\n    },\n    \"draft_claim\": 1,\n    \"import_id\": \"{{import_id}}\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/import/debt-notice/put",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"import",
+						"debt-notice",
+						"put"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://stage.ekdp.kz"
+		},
+		{
+			"key": "api-key",
+			"value": "YOUR_STAGE_KEY"
+		},
+		{
+			"key": "import_id",
+			"value": ""
+		}
+	]
+}
